@@ -10,3 +10,4 @@ my_packages <- c("tidyverse", "broom", "coefplot", "cowplot", "drat",
 
 
 install.packages(my_packages, repos = "http://cran.rstudio.com")
+
