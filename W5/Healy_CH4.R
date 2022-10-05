@@ -11,6 +11,7 @@ library(socviz)
 # Reminder of what gapminder looks like
 view(gapminder)
 
+data.df <- gapminder
 # Brief reminder of what we looked at in chapter 3
 
 p <- ggplot(data = gapminder,
@@ -141,6 +142,7 @@ p + geom_line(color="gray70", mapping=aes(group = country)) +
 View(gss_sm)
 head(gss_sm)
 str(gss_sm)
+t(t(gss_sm))
 # Using the gss_sm data set to show faceting by two Factors at the same time
 
 p <- ggplot(data = gss_sm, mapping = aes(x = age, y = childs))
