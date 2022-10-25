@@ -1,0 +1,84 @@
+---
+title: "Quiz1"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(gapminder)
+library(tidyverse)
+library(socviz)
+```
+
+## Hands-on 1
+Question: By using *vjust* argument in geom_text() function, label all points in the vertical direction above or below each point. (two plots should be drawn, below and above each point by changing the value of *vjust*)
+
+```{r 1, warning = FALSE, message = FALSE}
+p <- ggplot(data = by_country,
+            mapping = aes(x = roads_mean, y = donors_mean))
+
+p + geom_point() + geom_text(mapping = aes(label = country), vjust = -.2)
+
+```
+
+
+## Hands-on 2
+For the summarized *gss_sm* dataset grouped by only *padeg*, laebl the mean of children and siblings based on the paternal degree.
+
+
+```{r 2, warning = FALSE, message = FALSE}
+library(ggrepel)
+by_padeg <- gss_sm %>% group_by(padeg) %>%
+  summarize(childs_mean= mean(childs, na.rm = TRUE),
+            sibs_mean = mean(sibs, na.rm = TRUE))
+
+p <- ggplot(data = by_bigregion,
+            mapping = aes(x = childs_mean, y = sibs_mean))
+p + geom_point() + geom_text(mapping = aes(label = padeg), vjust = 1)
+
+# Using geom_text_repel
+p_title <- "Father's Highest Degree and the number of Sibling and Children"
+p_subtitle <- "General Social Survey 2016 "
+p_caption <- "Data from socviz."
+x_label <- "Average of Children"
+y_label <- "Average of Siblings"
+
+p + geom_point() + geom_text_repel(mapping = aes(label = padeg))+ labs(x = x_label, y = y_label, title = p_title, subtitle = p_subtitle,
+         caption = p_caption)
+
+
+
+```
+
+## Hands-on 3
+Question: For the by-country dataframe, choose observations from the united state of america (ccdoe=USA) after 1998, and then highlight them in the plot of road fatalities average against the average percentage of donors 
+
+```{r 3, warning = FALSE, message = FALSE}
+organdata$ind <- organdata$ccode %in% c("USA") &
+                    organdata$year > 1998
+p <- ggplot(data = organdata,
+            mapping = aes(x = roads,
+                          y = donors, color = ind))
+p + geom_point() +
+    geom_text_repel(data = subset(organdata, ind),
+                    mapping = aes(label = ccode)) +
+    guides(color = "none")   # Remove some guides
+```
+
+
+## Hands-on 4
+Using gapminder dataset, specify the outliers in the plot of gdpPercap over lifeExp. 
+
+
+```{r 4, warning = FALSE, message = FALSE}
+library(gapminder)
+p <- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp)) +
+annotate(geom = "rect", xmin = 75000, xmax = 120000,
+             ymin = 50, ymax = 70, fill = "red", alpha = 0.2) + 
+    annotate(geom = "text", x = 75000, y = 75,
+             label = "A surprisingly high gdpPercap \n and average lifeExp.", hjust = 0) 
+p + geom_point()
+```
+
